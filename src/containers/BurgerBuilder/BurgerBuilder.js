@@ -8,7 +8,6 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
-import URL from "../../URL";
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -91,30 +90,44 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
+    const queryParams = [];
+    for (let i in this.state.ingredients) {
+      queryParams.push(
+        encodeURIComponent(i) +
+          "=" +
+          encodeURIComponent(this.state.ingredients[i])
+      );
+    }
+    queryParams.push("price=" + this.state.totalPrice);
+    const queryString = queryParams.join("&");
+    this.props.history.push({
+      pathname: "/checkout",
+      search: "?" + queryString,
+    });
     // alert("You continue!");
-    this.setState({ loading: true });
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: "Iura",
-        address: {
-          street: "testamint",
-          zipCode: "313231",
-          country: "Gabon",
-        },
-        email: "erka@merka.com",
-      },
-      deliveryMethod: "fast and furios",
-    };
-    axios
-      .post("/orders.json", order)
-      .then((response) => {
-        this.setState({ loading: false, purchasing: false });
-      })
-      .catch((error) => {
-        this.setState({ loading: false, purchasing: false });
-      });
+    // this.setState({ loading: true });
+    // const order = {
+    //   ingredients: this.state.ingredients,
+    //   price: this.state.totalPrice,
+    //   customer: {
+    //     name: "Iura",
+    //     address: {
+    //       street: "testamint",
+    //       zipCode: "313231",
+    //       country: "Gabon",
+    //     },
+    //     email: "erka@merka.com",
+    //   },
+    //   deliveryMethod: "fast and furios",
+    // };
+    // axios
+    //   .post("/orders.json", order)
+    //   .then((response) => {
+    //     this.setState({ loading: false, purchasing: false });
+    //   })
+    //   .catch((error) => {
+    //     this.setState({ loading: false, purchasing: false });
+    //   });
   };
 
   render() {
